@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoTrace</title>
+  <meta name="description" content="Book e-waste pickups and follow each handover through to a recycling partner.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.5 6-6.5"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+      <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+      <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    </defs>
+  </svg>
+  <a class="skip" href="#app">Skip to main content</a>
+  <div class="demo-banner" id="demoBanner" hidden>Demonstration mode: accounts, partners and pickups shown here are sample data. Partner entries labelled Sample are not real organisations.</div>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="#/" aria-label="EcoTrace home"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg>EcoTrace</a>
+      <nav class="nav" id="nav" aria-label="Main"></nav>
+      <div class="bar-end" id="barEnd"></div>
+      <button class="icon-btn nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+
+  <main class="wrap page" id="app" tabindex="-1"></main>
+
+  <footer class="site-footer">
+    <div class="wrap foot-grid">
+      <div>
+        <strong>EcoTrace</strong>
+        <p class="muted small">E-waste pickup booking and chain-of-custody tracking for Indian cities.</p>
+        <p class="small">Contact: support@ecotrace.example<br><span class="muted">Placeholder address for this prototype.</span></p>
+      </div>
+      <div>
+        <h3>Platform</h3>
+        <a href="#/book">Book a pickup</a>
+        <a href="#/track">Track e-waste</a>
+        <a href="#/partners">Recycling partners</a>
+        <a href="#/about">How records work</a>
+      </div>
+      <div>
+        <h3>Policies</h3>
+        <a href="#/policies">Privacy and data use</a>
+        <a href="#/policies">Terms of use</a>
+      </div>
+      <div>
+        <h3>External resources</h3>
+        <a href="https://ewastemonitor.info/" target="_blank" rel="noopener">Global E-waste Monitor</a>
+        <a href="https://www.who.int/news-room/fact-sheets/detail/electronic-waste-(e-waste)" target="_blank" rel="noopener">WHO e-waste fact sheet</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="modal" class="modal" hidden><div class="modal-body" id="modalBody" role="dialog" aria-modal="true"></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/pages-public.js"></script>
+  <script src="js/pages-customer.js"></script>
+  <script src="js/pages-pickup.js"></script>
+  <script src="js/pages-admin.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
